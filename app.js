@@ -3,12 +3,24 @@ require('dotenv').config();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const { errors } = require('celebrate');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const routes = require('./routes/index');
 const NotFoundError = require('./errors/NotFoundError');
 const { PORT, BASE_URL, NODE_ENV } = require('./utils/variables');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const app = express();
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+});
+
+app.use(limiter);
+
+app.use(helmet());
 
 app.use(requestLogger);
 
