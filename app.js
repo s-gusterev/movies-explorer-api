@@ -9,6 +9,7 @@ const routes = require('./routes/index');
 const NotFoundError = require('./errors/NotFoundError');
 const { PORT, BASE_URL, NODE_ENV } = require('./utils/variables');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const { cors } = require('./middlewares/cors');
 
 const app = express();
 
@@ -23,6 +24,8 @@ app.use(limiter);
 app.use(helmet());
 
 app.use(requestLogger);
+
+app.use(cors);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
