@@ -6,7 +6,6 @@ const { errors } = require('celebrate');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const routes = require('./routes/index');
-const NotFoundError = require('./errors/NotFoundError');
 const { PORT, BASE_URL, NODE_ENV } = require('./utils/variables');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const { cors } = require('./middlewares/cors');
@@ -19,24 +18,20 @@ const limiter = rateLimit({
   standardHeaders: true,
 });
 
-app.use(limiter);
-
 app.use(helmet());
 
 app.use(requestLogger);
+
+app.use(limiter);
 
 app.use(cors);
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-mongoose.connect(NODE_ENV === 'production' ? BASE_URL : BASE_URL);
+mongoose.connect(NODE_ENV === 'production' ? BASE_URL : 'mongodb://localhost:27017/moviesdb');
 
 app.use(routes);
-
-app.use((req, res, next) => {
-  next(new NotFoundError('Страница не найдена'));
-});
 
 app.use(errorLogger);
 

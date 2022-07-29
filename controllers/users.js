@@ -26,15 +26,14 @@ const createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные при создании пользователя');
+        next(new BadRequestError('Переданы некорректные данные при создании пользователя'));
       }
       if (err.code === 11000) {
-        throw new ConflictError('Переданы некорректные данные при создании пользователя');
+        next(new ConflictError('Переданы некорректные данные при создании пользователя'));
       } else {
         next(err);
       }
-    })
-    .catch(next);
+    });
 };
 
 const login = (req, res, next) => {
@@ -46,9 +45,8 @@ const login = (req, res, next) => {
       res.json({ token });
     })
     .catch(() => {
-      throw new UnauthorizedError('Неправильные email или пароль');
-    })
-    .catch(next);
+      next(new UnauthorizedError('Неправильные email или пароль'));
+    });
 };
 
 const getUserInfo = (req, res, next) => {
@@ -70,14 +68,15 @@ const patchUserProfile = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные при обновлении профиля');
-      } else if (err.name === 'CastError') {
-        throw new BadRequestError('Не правильно указан id пользователя');
+        next(new BadRequestError('Переданы некорректные данные при обновлении профиля'));
+      } if (err.name === 'CastError') {
+        next(new BadRequestError('Не правильно указан id пользователя'));
+      } if (err.code === 11000) {
+        next(new ConflictError('Пользователь с данным email уже существует'));
       } else {
         next(err);
       }
-    })
-    .catch(next);
+    });
 };
 
 module.exports = {

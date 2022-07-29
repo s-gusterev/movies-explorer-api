@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const { getMovies, saveMovie, deleteMovie } = require('../controllers/movies');
+const { patternUrl } = require('../utils/variables');
 
 router.get('/movies', getMovies);
 router.post('/movies', celebrate({
@@ -10,11 +11,10 @@ router.post('/movies', celebrate({
     duration: Joi.number().required(),
     year: Joi.string().required(),
     description: Joi.string().required(),
-    image: Joi.string().required().regex(/^((http|https):\/\/)?(www\.)?([A-Za-zА0-9]{1}[A-Za-zА0-9-]*\.?)*\.{1}[A-Za-zА0-9-]{2,}(\/([\w#!:.?+=&%@!\-/])*)?/),
-    trailerLink: Joi.string().required().regex(/^((http|https):\/\/)?(www\.)?([A-Za-zА0-9]{1}[A-Za-zА0-9-]*\.?)*\.{1}[A-Za-zА0-9-]{2,}(\/([\w#!:.?+=&%@!\-/])*)?/),
-    thumbnail: Joi.string().required().regex(/^((http|https):\/\/)?(www\.)?([A-Za-zА0-9]{1}[A-Za-zА0-9-]*\.?)*\.{1}[A-Za-zА0-9-]{2,}(\/([\w#!:.?+=&%@!\-/])*)?/),
-    owner: Joi.string().hex().length(24),
-    movieId: Joi.string().required(),
+    image: Joi.string().required().regex(patternUrl),
+    trailerLink: Joi.string().required().regex(patternUrl),
+    thumbnail: Joi.string().required().regex(patternUrl),
+    movieId: Joi.number().required(),
     nameRU: Joi.string().required(),
     nameEN: Joi.string().required(),
   }),

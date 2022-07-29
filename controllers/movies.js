@@ -35,12 +35,11 @@ const saveMovie = (req, res, next) => {
     .then((movie) => { res.json(movie); })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequestError('Переданы некорректные данные при создании карточки');
+        next(new BadRequestError('Переданы некорректные данные при создании карточки'));
       } else {
         next(err);
       }
-    })
-    .catch(next);
+    });
 };
 
 const getMovies = (req, res, next) => {
@@ -65,11 +64,10 @@ const deleteMovie = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequestError('Некорректно указан id фильма');
+        next(new BadRequestError('Некорректно указан id фильма'));
       }
       next(err);
-    })
-    .catch(next);
+    });
 };
 
 module.exports = { getMovies, saveMovie, deleteMovie };
